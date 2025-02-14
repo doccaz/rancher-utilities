@@ -6,15 +6,17 @@
 #
 VERSION="v1.31.4"
 RELEASE="rke2r1"
-FILES="rke2-images.linux-amd64.tar.zst rke2.linux-amd64.tar.gz sha256sum-amd64.txt rke2-images-calico.linux-amd64.tar.zst
-"
+ARCH="amd64"
+BASE_FILES="rke2-images.linux-${ARCH}.tar.zst rke2.linux-${ARCH}.tar.gz rke2-images-core.linux-${ARCH}.tar.zst sha256sum-${ARCH}.txt"
+CNI_FILES="rke2-images-calico.linux-${ARCH}.tar.zst rke2-images-canal.linux-${ARCH}.tar.zst rke2-images-cilium.linux-${ARCH}.tar.zst rke2-images-flannel.linux-${ARCH}.tar.zst rke2-images-multus.linux-${ARCH}.tar.zst"
+EXTRA_FILES="rke2-images-traefik.linux-${ARCH}.tar.zst rke2-images-harvester.linux-${ARCH}.tar.zst rke2-images-vsphere.linux-${ARCH}.tar.zst"
 OUTDIR="offline-bundle"
 SAVEPATH="${OUTDIR}/rke2-artifacts"
 ARCHIVE="rke2-${VERSION}-${RELEASE}-offline.tgz"
 
 rm -rf ${OUTDIR}
 mkdir -p ${SAVEPATH} && cd ${SAVEPATH}
-for f in ${FILES}; do
+for f in ${BASE_FILES} ${CNI_FILES} ${EXTRA_FILES}; do
 	echo "* downloading ${f}..."
 	curl -OL https://github.com/rancher/rke2/releases/download/${VERSION}%2B${RELEASE}/${f}
 	if [ $? != 0 ]; then
