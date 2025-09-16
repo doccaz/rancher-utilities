@@ -16,4 +16,5 @@ These are intended to be applied to the cluster with "kubectl apply -f <filename
 
 These are intended to be written directly to /oem:
 * __90_fake_scsi_wwn_generator.yaml__: This file, when added to /oem, adds dev rules to generate missing SCSI disk WWNs. Useful when simulating multipath disks on KVM.
+* __99_fstab_patch.yaml__: This file, when added to /oem, will create a new permanent entry to /etc/fstab.
 

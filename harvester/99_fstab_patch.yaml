@@ -1,0 +1,7 @@
+name: "fstab patch"
+stages:
+  initramfs:
+    - name: "Add new entries to fstab"
+      commands:
+        - |
+          echo "/dev/dm-0  /var/lib/harvester/volume1 ext4 defaults 2 2" >> /etc/fstab
