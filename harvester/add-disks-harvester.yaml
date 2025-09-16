@@ -1,0 +1,48 @@
+apiVersion: node.harvesterhci.io/v1beta1
+kind: CloudInit
+metadata:
+  name: multipathd-start
+spec:
+  matchSelector: {}
+  filename: 99_multipathd.yaml
+  contents: |
+    stages:
+      network:
+      - name: "Configure multipathd"
+        files:
+        - path: /etc/multipath.conf
+          content: |
+            blacklist {
+                device {
+                    vendor "!QEMU"
+                    product "!QEMU"
+                }
+            }
+            blacklist_exceptions {
+                device {
+                    vendor "QEMU"
+                    product "QEMU"
+                }
+            }
+          permissions: 0744
+      - name: "Start multipathd service"
+        systemctl:
+          enable:
+          - multipathd
+          start:
+          - multipathd
+---
+apiVersion: node.harvesterhci.io/v1beta1
+kind: CloudInit
+metadata:
+  name: volume1-mount
+spec:
+  matchSelector: {}
+  filename: 99_fstab.yaml
+  contents: |
+    stages:
+      initramfs:
+        - name: "Add new entries to fstab"
+          commands:
+            - |
+              echo "/dev/dm-0  /var/lib/harvester/volume1 ext4 defaults 2 2" >> /etc/fstab

@@ -1,0 +1,13 @@
+apiVersion: node.harvesterhci.io/v1beta1
+kind: CloudInit
+metadata:
+  name: proxyconfig
+spec:
+  matchSelector: {}
+  filename: 50_proxy.yaml
+  contents: |
+    os:
+      environment:
+        http_proxy: http://myserver
+        https_proxy: http://myserver
+        no_proxy: http://myserver

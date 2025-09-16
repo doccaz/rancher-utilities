@@ -1,0 +1,92 @@
+apiVersion: node.harvesterhci.io/v1beta1
+kind: CloudInit
+metadata:
+  name: multipathd-start-suse-01
+spec:
+  matchSelector:
+    kubernetes.io/hostname: sv-bl-suse-01
+  filename: 99_multipathd-suse-01.yaml
+  contents: |
+    stages:
+      network:
+      - name: "Configure multipathd"
+        files:
+        - path: /etc/multipath.conf
+          content: |
+            whitelist {
+              wwid 360002ac0000000000000004300021760
+            }
+          permissions: 0744
+      - name: "Start multipathd service"
+        systemctl:
+          enable:
+          - multipathd
+          start:
+          - multipathd
+---
+apiVersion: node.harvesterhci.io/v1beta1
+kind: CloudInit
+metadata:
+  name: multipathd-start-suse-02
+spec:
+  matchSelector:
+    kubernetes.io/hostname: sv-bl-suse-02
+  filename: 99_multipathd-suse-02.yaml
+  contents: |
+    stages:
+      network:
+      - name: "Configure multipathd"
+        files:
+        - path: /etc/multipath.conf
+          content: |
+            whitelist {
+              wwid 360002ac0000000000000004400021760
+            }
+          permissions: 0744
+      - name: "Start multipathd service"
+        systemctl:
+          enable:
+          - multipathd
+          start:
+          - multipathd
+---
+apiVersion: node.harvesterhci.io/v1beta1
+kind: CloudInit
+metadata:
+  name: multipathd-start-suse-03
+spec:
+  matchSelector:
+    kubernetes.io/hostname: sv-bl-suse-03
+  filename: 99_multipathd-suse-03.yaml
+  contents: |
+    stages:
+      network:
+      - name: "Configure multipathd"
+        files:
+        - path: /etc/multipath.conf
+          content: |
+            whitelist {
+              wwid 360002ac0000000000000004500021760
+            }
+          permissions: 0744
+      - name: "Start multipathd service"
+        systemctl:
+          enable:
+          - multipathd
+          start:
+          - multipathd
+---
+apiVersion: node.harvesterhci.io/v1beta1
+kind: CloudInit
+metadata:
+  name: volume1-mount
+spec:
+  matchSelector: {}
+  filename: 99_fstab.yaml
+  contents: |
+    stages:
+      initramfs:
+        - name: "Add new entries to fstab"
+          commands:
+            - |
+              echo "/dev/dm-0  /var/lib/harvester/volume1 ext4 defaults 2 2" >> /etc/fstab

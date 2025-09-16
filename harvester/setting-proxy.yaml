@@ -1,0 +1,8 @@
+apiVersion: settings.harvesterhci.io/v1beta1
+kind: Setting
+metadata:
+  name: set-proxy
+spec:
+ http-proxy: '{"httpProxy": "http://my.proxy", "httpsProxy": "https://my.proxy", "noProxy": "some.internal.svc"}'
+
+
