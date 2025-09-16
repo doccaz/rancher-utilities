@@ -1,0 +1,21 @@
+name: "Add udev rules to generate missing SCSI disk WWNs"
+stages:
+  initramfs:
+    - files:
+      - path: /etc/udev/rules.d/59-fake-scsi-wwn-generator.rules
+        permissions: 420
+        owner: 0
+        group: 0
+        content: |
+          # For anything that looks like a SCSI disk (/dev/sd*),
+          # if it has a serial number, but does _not_ have a WWN,
+          # create a fake WWN based on the serial number.  We need
+          # to set both ID_WWN so Harvester's node-disk-manager
+          # can see the WWN, and ID_WWN_WITH_EXTENSION which is
+          # what 60-persistent-storage.rules uses to generate a
+          # /dev/disk/by-id/wwn-* symlink for the device.
+          ACTION=="add|change", SUBSYSTEM=="block", KERNEL=="sd*[!0-9]", \
+            ENV{ID_SERIAL}=="?*", \
+            ENV{ID_WWN}!="?*", ENV{ID_WWN_WITH_EXTENSION}!="?*", \
+            ENV{ID_WWN}="fake.$env{ID_SERIAL}", \
+            ENV{ID_WWN_WITH_EXTENSION}="fake.$env{ID_SERIAL}"
